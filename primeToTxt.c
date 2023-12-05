@@ -4,10 +4,14 @@
 
 #include <stdio.h>
 #include <math.h>
+#include "dinlist.h"
 
 int main() {
-    int maxPrime, primeCount = 0;
+    int maxPrime;
     boolean prime;
+    dinList primes;
+    primes.list = malloc(sizeof(unsigned long long int));
+    primes.size = 0;
 
     printf("Enter the prime number bit size: ");
     scanf("%d", &maxPrime);
@@ -24,32 +28,14 @@ int main() {
             }
         }
         if (prime) {
-            primeCount++;
+            append(&primes, i);
         }   
-    }
-
-    int primes[primeCount];
-    int idxTemp = 0;
-    for (int i = 2; i < maxPrime; i++) {
-        prime = true;
-        if (i > 2) {
-            for (int j = 2; j < i; j++) {
-                if (i % j == 0) {
-                    prime = false;
-                    break;
-                }
-            }
-        }
-        if (prime) {
-            primes[idxTemp] = i;
-            idxTemp++;
-        }
     }
 
     FILE *fptr;
     fptr = fopen("prime.txt", "w");
-    for (int i = 0; i < primeCount; i++) {
-        fprintf(fptr, "%d ", primes[i]);
+    for (int i = 0; i < primes.size; i++) {
+        fprintf(fptr, "%lld ", primes.list[i]);
     }
     fclose(fptr);
 }

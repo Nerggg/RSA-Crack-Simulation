@@ -5,22 +5,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-
-typedef struct dinList {
-  long long int size;
-  long long int* list;
-} dinList;
-
-void append(dinList *arr, long long int value){
-  long long int *new_ptr = realloc(arr->list, sizeof *(arr->list) * (arr->size + 1u));
-  if (new_ptr == NULL) {
-    fprintf(stderr, "Out of memory\n");
-    exit (EXIT_FAILURE);
-  }
-  arr->list = new_ptr;
-  arr->list[arr->size] = value;
-  arr->size++;
-}
+#include "dinlist.h"
 
 int ctoi(char letter) {
     if (letter == '0') {
@@ -55,45 +40,65 @@ int ctoi(char letter) {
     }
 }
 
-int coprime(int num1, int num2) {  
-    int min, count;
-    boolean flag = true;  
-    min = num1 < num2 ? num1 : num2;  
-    for(count = 2; count <= min; count++) {  
-        if( num1 % count == 0 && num2 % count == 0 ) {  
-            flag = false;  
-            break;  
-        }  
-    }  
-    return(flag);  
-} 
- 
-int gcdExtended(int a, int b, int* x, int* y) { 
+unsigned long long int power(unsigned long long int x, unsigned long long int y)
+{
+    unsigned long long int temp;
+    if (y == 0)
+        return 1;
+    temp = power(x, y / 2);
+    if (y % 2 == 0)
+        return temp * temp;
+    else
+        return x * temp * temp;
+}
+
+unsigned long long int gcdExtended(unsigned long long int a, unsigned long long int b, unsigned long long int* x, unsigned long long int* y) { 
     if (a == 0) { 
         *x = 0, *y = 1; 
         return b; 
     } 
-    int x1, y1;
-    int gcd = gcdExtended(b % a, a, &x1, &y1); 
+    unsigned long long int x1, y1;
+    unsigned long long int gcd = gcdExtended(b % a, a, &x1, &y1); 
     *x = y1 - (b / a) * x1; 
     *y = x1; 
     return gcd; 
 }
 
-long long int modInverse(int A, int M) { 
-    int x, y; 
+unsigned long long int modInverse(unsigned long long int A, unsigned long long int M) { 
+    unsigned long long int x, y; 
     gcdExtended(A, M, &x, &y); 
-    long long int res = (long long int) ((x % M + M) % M); 
+    unsigned long long int res = (unsigned long long int) ((x % M + M) % M); 
     return res;
 }  
+
+boolean coprime(unsigned long long int num1, unsigned long long int num2) {  
+    unsigned long long int min, count;
+    boolean flag = true;  
+    min = num1 < num2 ? num1 : num2;  
+    for(count = 2; count <= min; count++) {  
+        if(num1 % count == 0 && num2 % count == 0) {  
+            flag = false;  
+            break;  
+        }  
+    }  
+    return flag;  
+} 
+
+unsigned long long int find_coprime(unsigned long long int m) {
+    for (unsigned long long int a = m/2 + 1; a > 2; a--) {
+        if (coprime(a, m)) {
+            return a;
+        }
+    }
+}
 
 int main() {
     FILE *fptr;
     dinList primes;
-    primes.list = malloc(sizeof(long long int));
+    primes.list = malloc(sizeof(unsigned long long int));
     primes.size = 0;
     char ch;
-    int temp = 0;
+    unsigned long long int temp = 0;
     fptr = fopen("prime.txt", "r");
     do {
         ch = fgetc(fptr);
@@ -108,27 +113,25 @@ int main() {
     fclose(fptr);
 
     srand(time(NULL));
-    int p = primes.list[rand() % primes.size];
-    int q = primes.list[rand() % primes.size];
-    long long int n = (long long int) (p * q);
-    long long int m = (long long int) ((p - 1) * (q - 1));
+    unsigned long long int p = primes.list[rand() % primes.size];
+    unsigned long long int q = primes.list[rand() % primes.size];
+    unsigned long long int n = (unsigned long long int) (p * q);
+    unsigned long long int m = (unsigned long long int) ((p - 1) * (q - 1));
 
-    dinList e;
-    e.list = malloc(sizeof(long long int));
-    e.size = 0;
-    for (int i = 2; i < m; i++) {
-        if (coprime(i, m)) {
-            append(&e, i);
-        }
-    }
+    printf("p: %lld\n", p);
+    printf("q: %lld\n", q);
+    printf("n: %lld\n", n);
+    printf("m: %lld\n", m);
+    printf("Now the code will generate a public key based on the value of \'m\'\n");
+    printf("Please wait\n\n");
 
-    long long int publicKey = e.list[rand() % e.size];
+    unsigned long long int publicKey = find_coprime(m);
 
-    long long int privateKey = modInverse(publicKey, m);
+    unsigned long long int privateKey = modInverse(publicKey, m);
 
     printf("These are the random generated RSA components\n");
-    printf("p: %d\n", p);
-    printf("q: %d\n", q);
+    printf("p: %lld\n", p);
+    printf("q: %lld\n", q);
     printf("n: %lld\n", n);
     printf("m: %lld\n", m);
     printf("Public Key: %lld\n", publicKey);
@@ -138,21 +141,18 @@ int main() {
     printf("Please wait\n\n");
 
     boolean found = false;
-    int i = 0, j;
-    long long int privateKeyGuess;
+    unsigned long long int i = 0, j;
+    unsigned long long int privateKeyGuess;
 
     clock_t start = clock();
     while (i < primes.size && !found) {
         j = 0;
         while (j < primes.size && !found) {
-            if ((long long int) (primes.list[i] * primes.list[j]) == n) {
-                long long int mGuess = (long long int) ((primes.list[i] - 1) * (primes.list[j] - 1));
-                for (int k = 0; k < mGuess; k++) {
-                    if (k == publicKey) {
-                        found = true;
-                        privateKeyGuess = modInverse(k, mGuess);
-                        break;
-                    }
+            if ((unsigned long long int) (primes.list[i] * primes.list[j]) == n) {
+                unsigned long long int mGuess = (unsigned long long int) ((primes.list[i] - 1) * (primes.list[j] - 1));
+                if (find_coprime(mGuess) == publicKey) {
+                    privateKeyGuess = modInverse(publicKey, mGuess);
+                    found = true;
                 }
             }
             j++;
