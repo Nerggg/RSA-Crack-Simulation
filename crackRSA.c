@@ -40,18 +40,6 @@ int ctoi(char letter) {
     }
 }
 
-unsigned long long int power(unsigned long long int x, unsigned long long int y)
-{
-    unsigned long long int temp;
-    if (y == 0)
-        return 1;
-    temp = power(x, y / 2);
-    if (y % 2 == 0)
-        return temp * temp;
-    else
-        return x * temp * temp;
-}
-
 unsigned long long int gcdExtended(unsigned long long int a, unsigned long long int b, unsigned long long int* x, unsigned long long int* y) { 
     if (a == 0) { 
         *x = 0, *y = 1; 

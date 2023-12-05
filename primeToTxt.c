@@ -6,16 +6,32 @@
 #include <math.h>
 #include "dinlist.h"
 
+unsigned long long int power(unsigned long long int x, unsigned long long int y) {
+    unsigned long long int temp;
+    if (y == 0)
+        return 1;
+    temp = power(x, y / 2);
+    if (y % 2 == 0)
+        return temp * temp;
+    else
+        return x * temp * temp;
+}
+
 int main() {
-    int maxPrime;
+    unsigned long long int maxPrime;
     boolean prime;
     dinList primes;
     primes.list = malloc(sizeof(unsigned long long int));
     primes.size = 0;
 
     printf("Enter the prime number bit size: ");
-    scanf("%d", &maxPrime);
-    maxPrime = pow(2, maxPrime);
+    scanf("%lld", &maxPrime);
+    while (maxPrime >= 64) {
+        printf("Please enter below 64 bits (it goes beyond C's capability)\n");
+        printf("Enter the prime number bit size: ");
+        scanf("%lld", &maxPrime);
+    }
+    maxPrime = power(2, maxPrime);
 
     for (int i = 2; i < maxPrime; i++) {
         prime = true;
