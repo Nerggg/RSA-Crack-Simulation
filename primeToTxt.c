@@ -15,7 +15,7 @@ int main() {
 
     printf("Enter the prime number bit size: ");
     scanf("%d", &maxPrime);
-    maxPrime = pow(maxPrime, 2);
+    maxPrime = pow(2, maxPrime);
 
     for (int i = 2; i < maxPrime; i++) {
         prime = true;
