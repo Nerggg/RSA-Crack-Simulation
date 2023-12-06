@@ -52,11 +52,18 @@ unsigned long long int gcdExtended(unsigned long long int a, unsigned long long 
     return gcd; 
 }
 
-unsigned long long int modInverse(unsigned long long int A, unsigned long long int M) { 
-    unsigned long long int x, y; 
-    gcdExtended(A, M, &x, &y); 
-    unsigned long long int res = (unsigned long long int) ((x % M + M) % M); 
-    return res;
+unsigned long long int modInverse(unsigned long long int ra, unsigned long long int rb) { 
+    srand(time(NULL));
+    unsigned long long int rc, sa = 1, sb = 0, sc, i = 0;
+    if (rb > 1) do {
+            rc = ra % rb;
+            sc = sa - (ra / rb) * sb;
+            sa = sb, sb = sc;
+            ra = rb, rb = rc;
+        } while (++i, rc);
+    sa *= (i *= ra == 1) != 0;
+    sa += (i & 1) * sb;
+    return sa;
 }  
 
 boolean coprime(unsigned long long int num1, unsigned long long int num2) {  
@@ -73,7 +80,7 @@ boolean coprime(unsigned long long int num1, unsigned long long int num2) {
 } 
 
 unsigned long long int find_coprime(unsigned long long int m) {
-    for (unsigned long long int a = m/2 + 1; a > 2; a--) {
+    for (unsigned long long int a = m/2; a > 2; a--) {
         if (coprime(a, m)) {
             return a;
         }
