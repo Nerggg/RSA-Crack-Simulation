@@ -27,7 +27,7 @@ int main() {
     printf("Enter the prime number bit size: ");
     scanf("%lld", &maxPrime);
     while (maxPrime >= 64) {
-        printf("Please enter below 64 bits (it goes beyond C's capability)\n");
+        printf("Please enter below 64 bit (it goes beyond C's capability)\n");
         printf("Enter the prime number bit size: ");
         scanf("%lld", &maxPrime);
     }
