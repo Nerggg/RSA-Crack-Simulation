@@ -17,7 +17,7 @@ gcc primeToTxt.c dinList.c -o <executeable_name> -lm
 gcc crackRSA.c dinList.c -o <executeable_name>
 ```
 3. Run the compiled `primeToTxt.c` and enter the maximum bit size of the number
-4. Run the compiler `crackRSA.c` and wait for the result
+4. Run the compiled `crackRSA.c` and wait for the result
 
 ## Improvement for the Future
 
