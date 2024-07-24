@@ -11,10 +11,10 @@ cd RSA-Crack-Simulation
 ```
 2. Compile both `primeToTxt.c` and `crackRSA.c` with the following command
 ```
-gcc primeToTxt.c dinList.c -o <executeable_name> -lm
+gcc primeToTxt.c dinlist.c -o <executeable_name> -lm
 ```
 ```
-gcc crackRSA.c dinList.c -o <executeable_name>
+gcc crackRSA.c dinlist.c -o <executeable_name>
 ```
 3. Run the compiled `primeToTxt.c` and enter the maximum bit size of the number
 4. Run the compiled `crackRSA.c` and wait for the result
